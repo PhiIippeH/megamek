@@ -285,12 +285,16 @@ public final class Player extends TurnOrdered {
         this.gameMaster = gameMaster;
     }
 
-    /** @return true if {@link #observer} flag is true and not in VICTORY phase*/
+    /**
+     * @return true if this player is not an observer. Observers have no units and no team.
+     * @see #isObserver()
+     */
     public boolean isObserver() {
-        if ((game != null) && game.getPhase().isVictory()) {
-            return false;
-        }
-        return observer;
+        return !checkVictoryPhase();
+    }
+
+    private boolean checkVictoryPhase() {
+        return (game != null) && game.getPhase().isVictory();
     }
 
     /**
@@ -447,12 +451,13 @@ public final class Player extends TurnOrdered {
     /**
      * Set deployment zone to edge of board for reinforcements
      */
+    private static final int DEPLOYMENT_THRESHOLD = 10;
     public void adjustStartingPosForReinforcements() {
-        if (startingPos > 10) {
-            startingPos -= 10; // deep deploy change to standard
+        if (startingPos > DEPLOYMENT_THRESHOLD) {
+            startingPos -= DEPLOYMENT_THRESHOLD; // deep deploy change to standard
         }
 
-        if (startingPos == Board.START_CENTER) {
+        if (startingPos == Board.START_CENTER && startingPos != DEPLOYMENT_THRESHOLD) {
             startingPos = Board.START_ANY; // center changes to any
         }
     }

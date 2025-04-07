@@ -18,16 +18,25 @@
  */
 package megamek.common;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import megamek.common.actions.PhysicalAttackAction;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import megamek.server.victory.VictoryResult;
 
 class GameTest {
 
+    private Game game;
+    @BeforeEach
+    void setUp() {
+        game = new Game();
+    }
     @Test
     void testCancelVictory() {
         // Default test
@@ -74,4 +83,35 @@ class GameTest {
         assertSame(winningPlayer, victoryResult2.getWinningPlayer());
         assertSame(winningTeam, victoryResult2.getWinningTeam());
     }
+
+    @Test
+    void testResetCharges() {
+        PhysicalAttackAction charge = new PhysicalAttackAction(1, 1, 1);
+        game.addCharge(charge);
+        assertTrue(game.getCharges().hasMoreElements());
+
+        game.resetCharges();
+        assertEquals(0, game.getChargesVector().size());
+    }
+
+    @Test
+    void testResetRams() {
+        PhysicalAttackAction ram = new PhysicalAttackAction(1, 1, 1);
+        game.addRam(ram);
+        assertTrue(game.getRams().hasMoreElements());
+
+        game.resetRams();
+        assertEquals(0, game.getRamsVector().size());
+    }
+
+    @Test
+    void testResetTeleMissileAttacks() {
+        PhysicalAttackAction teleMissileAttack = new PhysicalAttackAction(1, 1, 1);
+        game.addTeleMissileAttack(teleMissileAttack);
+        assertTrue(game.getTeleMissileAttacks().hasMoreElements());
+
+        game.resetTeleMissileAttacks();
+        assertEquals(0, game.getTeleMissileAttacksVector().size());
+    }
+
 }
